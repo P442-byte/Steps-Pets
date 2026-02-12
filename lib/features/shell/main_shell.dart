@@ -408,14 +408,51 @@ class _SettingsSheetState extends State<_SettingsSheet> {
             _SettingsTile(
               icon: Icons.pets_rounded,
               title: 'Add Test Pet',
-              subtitle: 'Get a random pet for testing',
+              subtitle: '${gameProvider.pets.length}/${GameProvider.maxDebugPets} pets',
               color: Colors.orange,
               onTap: () {
-                gameProvider.addTestPet();
-                soundService.playHatchCelebration();
+                final added = gameProvider.addTestPet();
+                if (added) {
+                  soundService.playHatchCelebration();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Added a test pet!'),
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Pet cap reached (${GameProvider.maxDebugPets})!'),
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                }
+              },
+            ),
+            _SettingsTile(
+              icon: Icons.delete_rounded,
+              title: 'Delete Last Pet',
+              subtitle: gameProvider.pets.isEmpty
+                  ? 'No pets to delete'
+                  : 'Remove ${gameProvider.pets.last.name}',
+              color: Colors.red,
+              onTap: () {
+                if (gameProvider.pets.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('No pets to delete!'),
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                  return;
+                }
+                final pet = gameProvider.pets.last;
+                gameProvider.deletePet(pet.id);
+                soundService.play(SoundType.buttonTap);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Added a test pet!'),
+                  SnackBar(
+                    content: Text('Deleted ${pet.name}'),
                     behavior: SnackBarBehavior.floating,
                   ),
                 );

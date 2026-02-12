@@ -102,7 +102,12 @@ class _GardenScreenState extends State<GardenScreen> {
           return _buildEmptyGarden(context);
         }
 
-        _initializeGardenPets(pets);
+        // Limit garden display to max garden pets
+        final gardenPets = pets.length > GameProvider.maxGardenPets
+            ? pets.sublist(pets.length - GameProvider.maxGardenPets)
+            : pets;
+
+        _initializeGardenPets(gardenPets);
 
         return Stack(
           children: [
@@ -163,7 +168,9 @@ class _GardenScreenState extends State<GardenScreen> {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            '${pets.length}',
+                            pets.length > GameProvider.maxGardenPets
+                                ? '${gardenPets.length}/${pets.length}'
+                                : '${pets.length}',
                             style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,

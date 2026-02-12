@@ -5,6 +5,11 @@ import '../models/models.dart';
 import '../services/services.dart';
 
 class GameProvider extends ChangeNotifier {
+  // === Pet Limits ===
+  static const int maxGardenPets = 20;
+  static const int maxTotalPets = 100;
+  static const int maxDebugPets = 50;
+
   final StorageService _storage;
   final StepTrackingService _stepService;
   final Uuid _uuid = const Uuid();
@@ -161,6 +166,7 @@ class GameProvider extends ChangeNotifier {
 
   Future<Pet?> hatchEgg(Egg egg) async {
     if (!egg.canHatch) return null;
+    if (_pets.length >= maxDebugPets) return null;
 
     // Find the template to get pet type
     final template = EggTemplates.starterEggs.firstWhere(
@@ -289,8 +295,10 @@ class GameProvider extends ChangeNotifier {
     notifyListeners();
   }
   
-  /// Add a test pet (for debugging)
-  void addTestPet() {
+  /// Add a test pet (for debugging). Returns false if at cap.
+  bool addTestPet() {
+    if (_pets.length >= maxDebugPets) return false;
+
     final types = PetType.values;
     final rarities = PetRarity.values;
     final type = types[DateTime.now().millisecond % types.length];
@@ -322,6 +330,14 @@ class GameProvider extends ChangeNotifier {
     _pets.add(pet);
     _storage.savePet(pet);
     _progress?.recordHatch();
+    notifyListeners();
+    return true;
+  }
+
+  /// Delete a pet by ID (for debugging)
+  Future<void> deletePet(String petId) async {
+    _pets.removeWhere((p) => p.id == petId);
+    await _storage.deletePet(petId);
     notifyListeners();
   }
 
