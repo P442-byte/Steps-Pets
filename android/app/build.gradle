@@ -1,0 +1,48 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+android {
+    namespace = "com.stepsandpets.steps_and_pets"
+    
+    // Change this from flutter.compileSdkVersion to 35
+    compileSdk = 35 
+    ndkVersion = flutter.ndkVersion
+
+    compileOptions {
+        // Update to VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        // Update to "17"
+        jvmTarget = "17"
+    }
+
+    defaultConfig {
+        applicationId = "com.stepsandpets.steps_and_pets"
+        
+        minSdk = flutter.minSdkVersion
+        // Change this from flutter.targetSdkVersion to 35
+        targetSdk = 35 
+        
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
+    }
+
+    buildTypes {
+        release {
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig = signingConfigs.debug
+        }
+    }
+}
+
+flutter {
+    source = "../.."
+}
