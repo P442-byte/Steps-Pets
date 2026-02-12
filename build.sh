@@ -16,5 +16,10 @@ export PATH="$PATH:`pwd`/flutter/bin"
 # Enable web support
 flutter config --enable-web
 
+# Clean and get dependencies
+flutter clean
+flutter pub get
+
 # Build the web application
-flutter build web --release
+# --no-tree-shake-icons is often needed in CI/CD environments like Vercel
+flutter build web --release --no-tree-shake-icons
