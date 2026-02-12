@@ -22,4 +22,6 @@ flutter pub get
 
 # Build the web application
 # --no-tree-shake-icons is often needed in CI/CD environments like Vercel
-flutter build web --release --no-tree-shake-icons
+# --web-renderer html can be more stable and smaller than canvaskit for some apps
+# --verbose helps debug build failures in CI logs
+flutter build web --release --no-tree-shake-icons --web-renderer html --verbose

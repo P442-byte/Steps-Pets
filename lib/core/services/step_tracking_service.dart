@@ -11,7 +11,15 @@ enum StepTrackingStatus {
 }
 
 class StepTrackingService {
-  final Health _health = Health();
+  Health? _healthInstance;
+  Health get _health {
+    if (kIsWeb) {
+      // This should not be reached if proper guards are in place, 
+      // but prevents web crashes during tree shaking/compilation if the analyzer gets confused.
+      throw UnsupportedError('Health not supported on web');
+    }
+    return _healthInstance ??= Health();
+  }
   
   StepTrackingStatus _status = StepTrackingStatus.notInitialized;
   StepTrackingStatus get status => _status;
